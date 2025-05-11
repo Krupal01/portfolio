@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getDatabase } from "firebase/database";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -13,9 +14,13 @@ const firebaseConfig = {
   storageBucket: "portfolio-bb607.firebasestorage.app",
   messagingSenderId: "369699575400",
   appId: "1:369699575400:web:1ea92c206e02219a4ccddd",
-  measurementId: "G-W3JJ9JDKSY"
+  measurementId: "G-W3JJ9JDKSY",
+  databaseURL: "https://portfolio-bb607-default-rtdb.firebaseio.com/"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const database = getDatabase(app);
+
+export { app, database };
