@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect, useState } from "react";
 import styled from 'styled-components'
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
@@ -9,6 +9,7 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import { education, experiences } from '../../data/constants';
 import EducationCard from '../Cards/EducationCard';
+import { fetchEducationData } from "../../FirebaseService";
 
 const Container = styled.div`
     display: flex;
@@ -77,7 +78,34 @@ const TimelineSection = styled.div`
 
 
 
-const index = () => {
+const Index = () => {
+
+    const [data, setData] = useState(null);
+            const [errorMessage, setErrorMessage] = useState(null);
+          
+          
+            useEffect(() => {
+              const getEducationData = async () => {
+                try {
+                  const data = await fetchEducationData();
+                  setData(data); 
+                } catch (error) {
+                  setErrorMessage(error.message);
+                }
+              };
+          
+              getEducationData();
+            }, []);
+        
+            if(errorMessage){
+              return (<div className="loader">${errorMessage}</div>)
+            }
+          
+            if(!data){
+             return (<div className="loader">Loading...</div>)
+            }
+    
+
     return (
         <Container id="education">
             <Wrapper>
@@ -106,4 +134,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Index

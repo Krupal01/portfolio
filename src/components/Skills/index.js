@@ -1,6 +1,6 @@
-import React from 'react'
+import React,  { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { skills } from '../../data/constants'
+import { fetchSkillData } from '../../FirebaseService'
 
 const Container = styled.div`
 display: flex;
@@ -120,6 +120,33 @@ const SkillImage = styled.img`
 
 
 const Skills = () => {
+
+    const [data, setData] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+  
+  
+    useEffect(() => {
+      const getSkillData = async () => {
+        try {
+          const data = await fetchSkillData();
+          setData(data); 
+        } catch (error) {
+          setErrorMessage(error.message);
+        }
+      };
+  
+      getSkillData();
+    }, []);
+
+    if(errorMessage){
+      return (<div className="loader">${errorMessage}</div>)
+    }
+  
+    if(!data){
+     return (<div className="loader">Loading...</div>)
+    }
+
+
   return (
     <Container id="skills">
       <Wrapper>
@@ -127,7 +154,7 @@ const Skills = () => {
         <Desc>Here are some of my skills on which I have been working on for the past 3 years.
         </Desc>
         <SkillsContainer>
-          {skills.map((skill) => (
+          {data.map((skill) => (
             <Skill>
               <SkillTitle>{skill.title}</SkillTitle>
               <SkillList>

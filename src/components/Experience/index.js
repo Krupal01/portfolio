@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
@@ -9,6 +9,7 @@ import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
 import ExperienceCard from '../Cards/ExperienceCard';
 import { experiences } from '../../data/constants';
+import { fetchExperienceData } from '../../FirebaseService'
 
 const Container = styled.div`
     display: flex;
@@ -74,17 +75,43 @@ const TimelineSection = styled.div`
 
 
 
-const index = () => {
+const Index = () => {
+
+     const [data, setData] = useState(null);
+        const [errorMessage, setErrorMessage] = useState(null);
+      
+      
+        useEffect(() => {
+          const getExperienceData = async () => {
+            try {
+              const data = await fetchExperienceData();
+              setData(data); 
+            } catch (error) {
+              setErrorMessage(error.message);
+            }
+          };
+      
+          getExperienceData();
+        }, []);
+    
+        if(errorMessage){
+          return (<div className="loader">${errorMessage}</div>)
+        }
+      
+        if(!data){
+         return (<div className="loader">Loading...</div>)
+        }
+
     return (
         <Container id="experience">
             <Wrapper>
                 <Title>Experience</Title>
                 <Desc>
-                I bring valuable experience as a software engineer, having worked on a wide variety of projects that have strengthened my expertise across diverse technologies and development environments.
+                    I bring valuable experience as a software engineer, having worked on a wide variety of projects that have strengthened my expertise across diverse technologies and development environments.
                 </Desc>
                 <TimelineSection>
                     <Timeline>
-                        {experiences.map((experience,index) => (
+                        {data.map((experience,index) => (
                             <TimelineItem>
                                 <TimelineSeparator>
                                     <TimelineDot variant="outlined" color="secondary" />
@@ -103,4 +130,4 @@ const index = () => {
     )
 }
 
-export default index
+export default Index
